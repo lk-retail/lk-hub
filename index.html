@@ -155,9 +155,11 @@ function toast(m){var e=document.getElementById('toast');e.style.whiteSpace='';e
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]});}
 function busyOn(m){document.getElementById('busymsg').textContent=m;document.getElementById('busy').style.display='flex';}
 function busyOff(){document.getElementById('busy').style.display='none';}
-var API='https://okzfaepdfeolsmurwtft.supabase.co/functions/v1/lk-api/hub';
+var API='https://okzfaepdfeolsmurwtft.supabase.co/functions/v1/hub-api';
 // 2026-11-19 起只用数据库版接口（Supabase），旧后台已停用
-API='https://okzfaepdfeolsmurwtft.supabase.co/functions/v1/lk-api/hub';try{localStorage.removeItem('lk_db');}catch(e){}
+API='https://okzfaepdfeolsmurwtft.supabase.co/functions/v1/hub-api';try{localStorage.removeItem('lk_db');}catch(e){}
+// 2026-11-22：直接连新后台 hub-api / toko-api（原来经 lk-api、lk-goods、lk-exp、lk-lapor、lk-school、lk-account 转一手）。各模块接口名前加模块前缀（goods. / exp. / lapor. / school. / account.）
+var HUB_API='https://okzfaepdfeolsmurwtft.supabase.co/functions/v1/hub-api';
 
 try{fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:'warm',args:[]})}).catch(function(){});}catch(e){}
 function run(fn,args,ok,fail){var onFail=function(e){if(String(e).indexOf('SESSION_EXPIRED')>=0){toast(t('expired'));logout();return;}(fail||function(){toast(t('err'))})(e);};
@@ -290,7 +292,7 @@ function recStop(force){if(!REC||REC.stopping)return;REC.sec=recClock();if(!forc
 
 // ================= screens =================
 // 版本号 + 自动更新：GitHub 页面会被缓存最多 10 分钟；打开或切回 App 时检查 version.txt，有新版就带新参数重新加载（正在录音/录像时不刷新）
-var APP_VER='20261122123715';
+var APP_VER='20261122123955';
 function chkVer(){if(typeof REC!=='undefined'&&REC)return;fetch('version.txt?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(v){v=v.trim();if(v&&/^\d{14}$/.test(v)&&v!==APP_VER&&sessionStorage.getItem('hub_upd')!==v){sessionStorage.setItem('hub_upd',v);location.replace(location.pathname+'?v='+v);}}).catch(function(){});}
 chkVer();document.addEventListener('visibilitychange',function(){if(!document.hidden)chkVer();});
 function render(){var lb=document.querySelector('header .lang');if(lb)lb.innerHTML=langLbl();var dk=S._desk=!!(S.token&&!S.mustChange&&deskOn()),dv=document.getElementById('dnav');document.body.classList.toggle('desk',dk);document.body.classList.toggle('dv',dk&&!!S.v);render0();if(dk&&dv){dv.innerHTML=S.boot?deskNav():'';if(!S.v&&S.boot){var tb=deskTabs();if(tb)document.getElementById('app').insertAdjacentHTML('afterbegin','<div class="dhead">'+tb+'</div>');}}else if(dv)dv.innerHTML='';var dh=dk&&document.querySelector('#app .dhead');document.body.style.setProperty('--dh',(dh?dh.offsetHeight:0)+'px');var th=document.querySelector('#app .gdtw thead');if(th)document.body.style.setProperty('--gdth',th.offsetHeight+'px');if(!dk&&window.gdCardify)gdCardify();}
@@ -617,7 +619,7 @@ function scSpotD(){var zh=L==='zh',r=(S.dc||{})['s_'+S.vid];if(!r||r.err)return 
  return h;}
 // ---------- 人事 SDM（2026-11-19）：门店人员 / 门店班次 / 考勤 / 积分校正。数据在 LK Toko 后台，这里只显示 ----------
 // 能看谁（2026-11-20 起不写死）：LK Hub 数据表 Settings 页 sdm_all / sdm_east / sdm_west / sdm_no_adj；后台把结果放在 boot.sdm（登录时也在 user.sdm），LK Toko 后台按同一组设置再查一次
-var TOKO_API='https://okzfaepdfeolsmurwtft.supabase.co/functions/v1/lk-api/toko';
+var TOKO_API='https://okzfaepdfeolsmurwtft.supabase.co/functions/v1/toko-api';
 function sdmAcc(){if(S.boot&&('sdm' in S.boot))return S.boot.sdm||null;return (S.user&&S.user.sdm)||null;}
 function sdmOk(){return !!(S.user&&sdmAcc());}
 function sdmNoAdj(){var a=sdmAcc();return !!a&&!a.adj;}
@@ -870,8 +872,9 @@ function acView(){var zh=L==='zh',h='',R=S.acRes;
  return h;}
 var LP_API='https://okzfaepdfeolsmurwtft.supabase.co/functions/v1/lk-lapor',SC_API='https://okzfaepdfeolsmurwtft.supabase.co/functions/v1/lk-school';
 function zi(a,b){return L==='zh'?a:b;}
+function xPfx(u){return u===AC_API?'account.':u===LP_API?'lapor.':u===SC_API?'school.':'';}
 function xCall(url,fn,args,ok,fail){var ac=window.AbortController?new AbortController():null,tm=ac?setTimeout(function(){ac.abort()},120000):0;
- fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:fn,app:'hub',args:[S.token].concat(args||[])}),signal:ac?ac.signal:undefined})
+ var pf=xPfx(url);fetch(pf?HUB_API:url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:pf+fn,args:[S.token].concat(args||[])}),signal:ac?ac.signal:undefined})
  .then(function(x){return x.json()}).then(function(j){clearTimeout(tm);if(j.err){if(String(j.err).indexOf('SESSION_EXPIRED')>=0){toast(t('expired'));logout();return;}(fail||xErr)(j.err);}else ok(j.data);})
  .catch(function(e){clearTimeout(tm);(fail||xErr)(String(e));});}
 function xErr(e){busyOff();var m=String(e||''),map={NEED_PHOTO:zi('至少要 1 张照片','Minimal 1 foto'),NEED_BODY:zi('写几句说明','Tulis penjelasan'),NEED_CAT:zi('选一下分类','Pilih kategori'),NEED_IMPACT:zi('选一下影响不影响营业','Pilih dampak operasional'),NEED_NOTE:zi('写一下说明','Tulis catatan'),NEED_TO:zi('选转交给谁','Pilih penerima'),NEED_STORE:zi('选一下地点','Pilih lokasi'),
@@ -1590,7 +1593,7 @@ var EXL_ID={pool:'Bank lokasi',progress:'Dalam proses',failed:'Tidak jadi',open:
 function exT(zh,id){return L==='zh'?zh:id;}
 function exStage(k){return L==='zh'?EXL[k]:EXL_ID[k];}
 function exCall(fn,args,ok,fail){var ac=window.AbortController?new AbortController():null,tm=ac?setTimeout(function(){ac.abort()},120000):0;
- fetch(EXP_API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:fn,args:[S.token].concat(args||[])}),signal:ac?ac.signal:undefined})
+ fetch(HUB_API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:'exp.'+fn,args:[S.token].concat(args||[])}),signal:ac?ac.signal:undefined})
  .then(function(x){return x.json()}).then(function(j){clearTimeout(tm);if(j.err){if(String(j.err).indexOf('SESSION_EXPIRED')>=0){toast(t('expired'));logout();return;}(fail||exErr)(j.err);}else ok(j.data);})
  .catch(function(e){clearTimeout(tm);(fail||exErr)(String(e));});}
 function exErr(e){var m=String(e||''),zh=L==='zh';var map={NO_ACCESS:zh?'你没有这个操作的权限':'Tidak ada akses',NEED_REASON:zh?'请写一句原因':'Tulis alasannya',NEED_NAME:zh?'请填点位名称':'Isi nama lokasi',BAD_CODE:zh?'门店编号格式不对（例：IDL-C12345）':'Format kode toko salah (contoh: IDL-C12345)',CODE_EXISTS:zh?'这个门店编号已经存在':'Kode toko sudah ada',NEED_RECEIPT_INFO:zh?'收据要填日期、金额、什么款':'Isi tanggal, jumlah, dan jenis pembayaran',FILE_TOO_BIG:zh?'文件太大（最大 50MB）':'File terlalu besar (maks 50MB)',TOO_LATE:zh?'上传超过 24 小时，不能撤回了；可以标记作废（文件仍保留）':'Lewat 24 jam, tidak bisa ditarik; tandai batal saja'};
@@ -1778,7 +1781,7 @@ function exNpSave(){exNpKeep();var N=S.ex.np;if(!String(N.name||'').trim())retur
 var GD_API='https://okzfaepdfeolsmurwtft.supabase.co/functions/v1/lk-goods';
 function gT(zh,id){return L==='zh'?zh:id;}
 function gdCall(fn,args,ok,fail){var ac=window.AbortController?new AbortController():null,tm=ac?setTimeout(function(){ac.abort()},120000):0;
- fetch(GD_API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:fn,args:[S.token].concat(args||[])}),signal:ac?ac.signal:undefined})
+ fetch(HUB_API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:'goods.'+fn,args:[S.token].concat(args||[])}),signal:ac?ac.signal:undefined})
  .then(function(x){return x.json()}).then(function(j){clearTimeout(tm);if(j.err){if(String(j.err).indexOf('SESSION_EXPIRED')>=0){toast(t('expired'));logout();return;}(fail||gdErr)(j.err);}else ok(j.data);})
  .catch(function(e){clearTimeout(tm);(fail||gdErr)(String(e));});}
 function gdErr(e){var m=String(e||''),G=S.gd||{};G.busy=0;
