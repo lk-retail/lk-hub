@@ -334,14 +334,14 @@ function render0(){var a=document.getElementById('app');setSync();if(!S.v||S.v.t
   if(!S.boot){try{var cb=JSON.parse(localStorage.getItem(bk)||'null');if(cb&&cb.serverTime){S.boot=cb;S.bootStale=1;if(cb.entries)S.user.entries=cb.entries;}}catch(e){}}
   run('bootstrap',[S.token],function(b){S.booting=0;S.boot=b;S.bootStale=0;if(b.entries){S.user.entries=b.entries;try{var ss=sessStore(),o=JSON.parse(ss.getItem('lk_sess')||'null');if(o){o.user.entries=b.entries;ss.setItem('lk_sess',JSON.stringify(o));}}catch(e){}}OFF=new Date(b.serverTime.replace(' ','T'))-Date.now();try{localStorage.setItem(bk,JSON.stringify(b));}catch(e){}if(!S.v)render();if(b.me&&b.me.core&&!S.ex&&window.exInit)setTimeout(exInit,500);},function(){S.booting=0;if(!S.bootStale)toast(t('err'));});}
   if(!S.boot){a.innerHTML='<div class="card">'+t('loading')+'</div>';return;}}
- if(!S.v){if(S._desk&&!S.mod)return a.innerHTML=deskHome();if(S.mod==='exp')return a.innerHTML=scExp();if(S.mod==='goods')return a.innerHTML=scGoods();if(S.mod==='fix')return a.innerHTML=scFix();if(S.mod==='school')return a.innerHTML=scSchool();if(S.mod==='myrec')return a.innerHTML=scMyRec();if(S._desk&&S.mod==='check')return a.innerHTML=deskChk();if(S.mod==='check')return a.innerHTML=scCheckMod();if(S.mod==='sales')return a.innerHTML=scSalesMod();if(S.mod==='salesS'||S.mod==='salesG')return a.innerHTML=scSales();if(S.mod==='salesD')return a.innerHTML=scSalesD();if(S.mod==='fin')return a.innerHTML=scFin();if(S.mod==='hr')return a.innerHTML=scHr();if(S.mod==='ops')return a.innerHTML=scOps();if(S.mod==='ntc')return a.innerHTML=scNtc();if(S.mod==='dash')return a.innerHTML=scDash();if(S.mod==='visit')return a.innerHTML=scVisit();if(S.mod==='spotd')return a.innerHTML=scSpotD();if(S.mod==='store')return a.innerHTML=scStore();return a.innerHTML=scHome();}
+ if(!S.v){if(/^lock_/.test(S.mod||''))return a.innerHTML=(S._desk?'':'<div class="row" style="margin:8px 0"><button class="btn ghost" style="width:auto" onclick="S.mod=null;render()">‹ '+(L==='zh'?'首页':'Beranda')+'</button></div>')+scLock(S.mod.slice(5));if(S._desk&&!S.mod)return a.innerHTML=deskHome();if(S.mod==='exp')return a.innerHTML=scExp();if(S.mod==='goods')return a.innerHTML=scGoods();if(S.mod==='fix')return a.innerHTML=scFix();if(S.mod==='school')return a.innerHTML=scSchool();if(S.mod==='myrec')return a.innerHTML=scMyRec();if(S._desk&&S.mod==='check')return a.innerHTML=deskChk();if(S.mod==='check')return a.innerHTML=scCheckMod();if(S.mod==='sales')return a.innerHTML=scSalesMod();if(S.mod==='salesS'||S.mod==='salesG')return a.innerHTML=scSales();if(S.mod==='salesD')return a.innerHTML=scSalesD();if(S.mod==='fin')return a.innerHTML=scFin();if(S.mod==='hr')return a.innerHTML=scHr();if(S.mod==='ops')return a.innerHTML=scOps();if(S.mod==='ntc')return a.innerHTML=scNtc();if(S.mod==='dash')return a.innerHTML=scDash();if(S.mod==='visit')return a.innerHTML=scVisit();if(S.mod==='spotd')return a.innerHTML=scSpotD();if(S.mod==='store')return a.innerHTML=scStore();return a.innerHTML=scHome();}
  if(S.v.type==='STD')return a.innerHTML=chkBack()+scStd();
  var sk=S.v.visitId+'|'+S.v.idx+'|'+(S.v.guideSeen?1:0);a.innerHTML=chkBack()+scSpot();if(sk!==SPOT_KEY){SPOT_KEY=sk;window.scrollTo(0,0);}}
 var SPOT_KEY='';
 // ---- 电脑版补充（2026-11-20 下午）：门店运营 / 人事副标题、门店运营今日表格、门店销售表格、店员反馈汇总 ----
 function deskTabs2(k){var zh=L==='zh',T=[],tab=function(lbl,on,click,off){return '<div class="dtab'+(on?' on':'')+(off?' dsoon':'')+'" onclick="'+(off?'toast(\''+(zh?'即将上线':'Segera hadir')+'\')':click)+'">'+lbl+'</div>';};
  if(k==='ops'){var o=S.opT===2?2:0;T=[tab(zh?'今日':'Hari ini',o===0,'S.opT=0;S.sdP=null;render()'),tab(zh?'任务':'Tugas',0,'',1),tab(zh?'积分':'Poin',o===2,'S.opT=2;S.sdP=null;render()'),tab(zh?'店员销售':'Penjualan staf',0,'',1)];}
- else if(k==='hr'){var h=S.sdT||0,no=sdmNoAdj();T=(zh?['门店人员','门店班次','考勤','积分校正']:['Tim Toko','Shift Toko','Absensi','Koreksi Poin']).map(function(n,i){return tab(n,h===i,'S.sdT='+i+';S.sdP=null;render()',(i>=3&&no)?2:0);}).concat(S.acOk?[tab(zh?'账号':'Akun',h===5,'S.sdT=5;S.sdP=null;render()',0)]:[]);}
+ else if(k==='hr'){var h=S.sdT||0,no=sdmNoAdj();T=(zh?['门店人员','门店班次','考勤','积分校正']:['Tim Toko','Shift Toko','Absensi','Koreksi Poin']).map(function(n,i){return (i>=3&&no)?'':tab(n,h===i,'S.sdT='+i+';S.sdP=null;render()',0);}).concat(S.acOk?[tab(zh?'账号':'Akun',h===5,'S.sdT=5;S.sdP=null;render()',0)]:[]);}
  return T.join('');}
 function opsDesk(list,isT,dd){var zh=L==='zh',X=S.opX=S.opX||{};
  var col=function(l){return l==='red'?'#d93025':l==='yellow'?'#f0a500':'#1e8e3e';};
@@ -388,19 +388,26 @@ function deskOn(){try{return localStorage.getItem('lk_desk')!=='0'&&window.inner
 function deskToggle(){var on=false;try{on=localStorage.getItem('lk_desk')!=='0';localStorage.setItem('lk_desk',on?'0':'1');}catch(e){}S.mod=null;S.nav=[];render();window.scrollTo(0,0);toast(L==='zh'?(on?'已切回原来的界面':'已打开电脑版新界面'):(on?'Kembali ke tampilan lama':'Tampilan desktop baru aktif'));}
 window.addEventListener('resize',function(){var on=deskOn();if(on!==!!S._desk){S._desk=on;render();}});
 var D_MODS=['home','ops','sales','check','goods','fin','hr','exp','fix','school'];
-function deskMod(){var m=S.mod;if(!m||m==='ntc')return 'home';if(m==='ops')return 'ops';if(/^sales/.test(m))return 'sales';if(/^(check|dash|visit|spotd|store|myrec)$/.test(m))return 'check';if(m==='fin')return 'fin';if(m==='hr')return 'hr';if(m==='exp')return 'exp';if(m==='goods')return 'goods';if(m==='fix')return 'fix';if(m==='school')return 'school';return 'home';}
+function deskMod(){var m=S.mod;if(!m||m==='ntc')return 'home';if(/^lock_/.test(m))return m.slice(5);if(m==='ops')return 'ops';if(/^sales/.test(m))return 'sales';if(/^(check|dash|visit|spotd|store|myrec)$/.test(m))return 'check';if(m==='fin')return 'fin';if(m==='hr')return 'hr';if(m==='exp')return 'exp';if(m==='goods')return 'goods';if(m==='fix')return 'fix';if(m==='school')return 'school';return 'home';}
 function deskName(k){var zh=L==='zh';return {home:zh?'首页':'Beranda',ops:zh?'门店运营':'Operasional Toko',sales:zh?'销售':'Penjualan',check:zh?'门店检查':'Cek Toko',goods:zh?'货品':'Produk & Stok',fin:zh?'财务':'Keuangan',hr:zh?'人事':'SDM',exp:zh?'拓展':'Ekspansi',fix:zh?'报修与反馈':'Perbaikan & Laporan',school:'LK School'}[k];}
-function deskAvail(k){var sa=(S.boot&&S.boot.sales)||{},core=!!((S.boot&&S.boot.me)||{}).core,pc=(S.boot&&S.boot.pc)||{};
+// 板块权限（待开发第 5 行，2026-11-25）：门店运营 / 销售 / 门店检查 / 人事 四个板块按后台给的 acc 判断（岗位功能表），没权限的照样显示，加小锁
+function modOk(k){var A=S.boot&&S.boot.acc,sa=(S.boot&&S.boot.sales)||{};if(A){if(k==='ops')return !!A.ops;if(k==='hr')return !!A.hr;if(k==='sales')return !!A.sales;if(k==='check')return !!(A.check||((S.boot.home||{}).dash));}
+ if(k==='ops')return opsOk();if(k==='hr')return sdmOk();if(k==='sales')return !!(sa.store||sa.grab);if(k==='check')return !!((S.user.entries||[]).length||((S.boot.home||{}).dash));return true;}
+var LOCK_SVG='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+function deskAvail(k){var core=!!((S.boot&&S.boot.me)||{}).core,pc=(S.boot&&S.boot.pc)||{};
  if(k==='home')return 2;if(k==='exp'||k==='goods')return core?2:-1;if(['fix','school'].indexOf(k)>=0)return core?2:-1;
- if(k==='ops')return opsOk()?2:(core?1:-1);if(k==='sales')return (sa.store||sa.grab)?2:(core?1:-1);
- if(k==='check')return (S.user.entries||[]).length||((S.boot.home||{}).dash)?2:(core?1:-1);if(k==='fin')return pc.has||core?2:-1;if(k==='hr')return sdmOk()?2:(core?1:-1);return -1;}
-function deskGo(k){var zh=L==='zh',av=deskAvail(k);if(av===0)return toast(zh?'即将上线':'Segera hadir');if(av===1)return offToast();S.nav=[];S.v=null;
+ if(['ops','sales','check','hr'].indexOf(k)>=0)return modOk(k)?2:(core?1:-1);if(k==='fin')return pc.has||core?2:-1;return -1;}
+function scLock(k){var zh=L==='zh',n=deskName(k);
+ return '<div class="card" style="text-align:center;padding:48px 20px;margin-top:24px"><div style="color:#9499A0;margin-bottom:14px"><svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>'
+  +'<div style="font-size:16px;font-weight:600;margin-bottom:18px">'+(zh?'你还没有「'+esc(n)+'」板块的权限':'Kamu belum punya akses ke menu "'+esc(n)+'"')+'</div>'
+  +'<button class="btn" style="max-width:220px;margin:0 auto" onclick="S.mod=null;S.nav=[];render();window.scrollTo(0,0)">'+(zh?'返回首页':'Kembali ke Beranda')+'</button></div>';}
+function deskGo(k){var zh=L==='zh',av=deskAvail(k);if(av===0)return toast(zh?'即将上线':'Segera hadir');S.nav=[];S.v=null;if(av===1){S.mod='lock_'+k;render();window.scrollTo(0,0);return;}
  if(k==='home'){S.mod=null;render();}else if(k==='sales'){var sa=(S.boot&&S.boot.sales)||{};S.mod=null;if(sa.store)slOpen('store');else if(sa.grab)slOpen('grab');else{S.mod='sales';}S.nav=[];render();}
  else if(k==='check'){var Hh=(S.boot&&S.boot.home)||{};S.chkT='STD';if(Hh.dash&&/management|operations manager/i.test(String(S.user.role||''))){S.fromDash=1;S.mod='dash';}else S.mod='check';render();}else if(k==='fin'){openMod('fin');S.finSub='mine';render();}else openMod(k);window.scrollTo(0,0);}
 function deskNav(){var zh=L==='zh',cur=deskMod(),u=S.user||{},m=(S.boot&&S.boot.me)||{},nm=titleCase(m.fullName||u.fullName||u.nick||''),av=myAv();
  var h='<div style="display:flex;align-items:center;gap:10px;padding:2px 8px 20px"><img src="img/icon-192.png?v=4" alt="LK" style="width:40px;height:40px;border-radius:9px;display:block;flex:none;box-shadow:0 0 0 1.5px #FDCD17"><div><div style="font-weight:700">LK Hub</div><div style="font-size:12px;color:#9499A0">'+(zh?'核心团队工作台':'Ruang kerja tim inti')+'</div></div></div>';
  D_MODS.forEach(function(k){var a=deskAvail(k);if(a<0)return;var ic=k==='home'?'M3 11l9-7 9 7v9h-6v-6H9v6H3z':ICO[k];
-  h+='<div class="dn'+(k===cur?' on':'')+(a<2?' dsoon':'')+'" onclick="deskGo(\''+k+'\')"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="'+ic+'"/></svg><span>'+esc(deskName(k))+'</span>'+(a===0?'<small>'+(zh?'即将上线':'Segera')+'</small>':'')+'</div>';});
+  h+='<div class="dn'+(k===cur?' on':'')+(a===0?' dsoon':'')+'" onclick="deskGo(\''+k+'\')"'+(a===1?' title="'+(zh?'没有权限':'Tidak ada akses')+'"':'')+'><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="'+ic+'"/></svg><span>'+esc(deskName(k))+'</span>'+(a===0?'<small>'+(zh?'即将上线':'Segera')+'</small>':'')+(a===1?'<span style="margin-left:auto;color:#6b7076;display:flex">'+LOCK_SVG+'</span>':'')+'</div>';});
  var seg=function(l,lbl){var on=L===l;return '<span onclick="setLangTo(\''+l+'\')" style="cursor:pointer;padding:0 4px;'+(on?'color:#FDCD17;font-weight:700':'color:#8a8f96')+'">'+lbl+'</span>';};
  h+='<div style="margin-top:auto;padding-top:14px;border-top:1px solid #2a2a2a">'
   +'<div onclick="acctMenu()" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px;border-radius:10px" onmouseover="this.style.background=\'#1f1f1f\'" onmouseout="this.style.background=\'\'"><div style="width:34px;height:34px;border-radius:50%;background:#FDCD17;color:#111;font-weight:700;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:none">'+(av?'<img src="'+av+'" style="width:100%;height:100%;object-fit:cover">':esc(nm.charAt(0)))+'</div><div style="min-width:0;flex:1"><div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(nm)+'</div><div style="font-size:12px;color:#9499A0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(deptLine())+'</div></div><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#9499A0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg></div>'
@@ -409,8 +416,8 @@ function deskNav(){var zh=L==='zh',cur=deskMod(),u=S.user||{},m=(S.boot&&S.boot.
   +'</div>';
  return h;}
 // 副标题（页面上方）：和手机版点进格子看到的几项一样
-function deskTabs(){var zh=L==='zh',k=deskMod(),m=S.mod,sa=(S.boot&&S.boot.sales)||{},H=(S.boot&&S.boot.home)||{},pc=(S.boot&&S.boot.pc)||{},T=[];
- var tab=function(lbl,on,click,off){return '<div class="dtab'+(on?' on':'')+(off?' dsoon':'')+'" onclick="'+(off?(off===2?'toast(\''+(zh?'即将上线':'Segera hadir')+'\')':'offToast()'):click)+'">'+lbl+'</div>';};
+function deskTabs(){if(/^lock_/.test(S.mod||''))return '';var zh=L==='zh',k=deskMod(),m=S.mod,sa=(S.boot&&S.boot.sales)||{},H=(S.boot&&S.boot.home)||{},pc=(S.boot&&S.boot.pc)||{},T=[];
+ var tab=function(lbl,on,click,off){if(off===1)return '';/* 没权限的分页直接不显示（待开发第 5 行） */return '<div class="dtab'+(on?' on':'')+(off?' dsoon':'')+'" onclick="'+(off?'toast(\''+(zh?'即将上线':'Segera hadir')+'\')':click)+'">'+lbl+'</div>';};
  if(k==='sales'){T.push(tab(zh?'门店销售':'Penjualan toko',m==='salesS'||(m==='salesD'&&S.slK!=='grab'),'S.nav=[];slOpen(\'store\');S.nav=[];render()',sa.store?0:1));T.push(tab(zh?'GrabMart 销售':'Penjualan GrabMart',m==='salesG'||(m==='salesD'&&S.slK==='grab'),'S.nav=[];slOpen(\'grab\');S.nav=[];render()',sa.grab?0:1));T.push(tab(zh?'Tokopedia 销售':'Penjualan Tokopedia',0,'',2));}
  else if(k==='check'){var ent=S.user.entries||[];T.push(tab(t('std'),m==='check'&&S.chkT!=='SPOT','S.nav=[];S.chkT=\'STD\';S.mod=\'check\';render()',ent.indexOf('STD')>=0?0:1));T.push(tab(t('spot'),m==='check'&&S.chkT==='SPOT','S.nav=[];S.chkT=\'SPOT\';S.mod=\'check\';render()',ent.indexOf('SPOT')>=0?0:1));
   if(H.dash)T.push(tab(zh?'检查看板':'Dashboard cek',/^(dash|store)$/.test(m)||(/^(visit|spotd)$/.test(m)&&S.fromDash),'S.nav=[];S.fromDash=1;S.mod=\'dash\';render()'));
@@ -458,7 +465,7 @@ function homeKpi(){var sv=slData('store'),R=sv&&sv.stores?sv:null;if(!(R&&R.e>0)
  R.stores.forEach(function(x){var o=slCalc(x,R);AA+=o.a;if(o.t>0){A+=o.a;T+=o.t;if(o.proj!=null&&o.proj<0.85)lo++;}});
  return {ach:T>0?A/T:null,proj:T>0?A/R.e*R.dim/T:null,need:T>A&&R.dim>R.e?(T-A)/(R.dim-R.e):0,aa:AA,asOf:R.asOf,lo:lo};}
 function homeAlerts(K){var zh=L==='zh',H=(S.boot&&S.boot.home)||{},D=H.dash,al=[],dash="S.nav=[];S.fromDash=1;S.mod='dash';render()";
- (S.boot.health||[]).forEach(function(x){al.push(['#b3261e',esc(x.src||'')+(zh?' 数据读取异常':' gagal dibaca'),(zh?'从 ':'Sejak ')+esc(x.since||'')+(x.bak?(zh?' · 正在用备份数据':' · pakai data cadangan'):'')]);});
+ (S.boot.health||[]).forEach(function(x){al.push([x.ours?'#b3261e':'#e0a100',esc(x.src||'')+(zh?(x.ours?' 读取出错':' 还没更新'):(x.ours?' gagal dibaca':' belum update')),zh?esc(x.msg||(x.bak?'页面先用 '+x.bak+' 的数':'')):(x.bak?'Pakai data '+esc(x.bak):'')]);});
  if(D){var nv=(D.stores||[]).filter(function(x){return !x.inHalf;}).length,pg=perDays(D.half);if(nv)al.push(['#e0a100',(zh?nv+' 家店本期（'+pd(D.half)+'）还没人做标准化检核':nv+' toko belum diinspeksi periode ini'),(pg?(zh?'本期已过 '+pg.gone+'/'+pg.tot+' 天 · ':pg.gone+'/'+pg.tot+' hari · '):'')+(zh?'点开检查看板':'Buka dashboard'),dash]);
   if(D.iss&&D.iss.over)al.push(['#b3261e',(zh?D.iss.over+' 项整改已超期':D.iss.over+' perbaikan lewat batas'),zh?'点开看是哪几项':'Lihat detail',dash]);}
  // 2026-11-21：每天 10:30 后，还没人打卡 / 没做开店检查的门店在首页标红（数据同「门店运营 · 今日」；11/24 门店正式开始用之前不显示）
@@ -466,6 +473,7 @@ function homeAlerts(K){var zh=L==='zh',H=(S.boot&&S.boot.home)||{},D=H.dash,al=[
  if(sdmTk()&&jd>='2026-11-24'&&jm>=630){var od=(S.sd||{}).opsT_;if(!od)sdmLoad('opsT_','opsToday',{date:''});else if(od.ok){var ls=od.list||[],ni=ls.filter(function(x){return (x.flags||[]).some(function(f){return f.k==='NO_IN'});}),nb=ls.filter(function(x){return (x.flags||[]).some(function(f){return f.k==='NO_BUKA'||f.k==='NO_CEK'});}),go="S.nav=[];S.opT=0;S.opD='';S.mod='ops';render()";
   if(ni.length)al.push(['#b3261e',(zh?ni.length+' 家店 10:30 了还没人打卡':ni.length+' toko belum ada yang absen (10:30)'),ni.map(function(x){return esc(x.name)}).slice(0,6).join('、')+(ni.length>6?' …':''),go]);
   if(nb.length)al.push(['#b3261e',(zh?nb.length+' 家店打了卡但还没做开店检查':nb.length+' toko belum cek buka'),nb.map(function(x){return esc(x.name)}).slice(0,6).join('、')+(nb.length>6?' …':''),go]);}}
+ var CL=H.cashLate||[];if(CL.length)al.push(['#b3261e',(zh?CL.length+' 家店现金没按时转':CL.length+' toko belum setor tunai sesuai janji'),zh?'点开看门店、金额、从哪天开始没转':'Lihat toko & jumlah','cashLateBox()']);
  if(K){if(K.lo)al.push(['#e0a100',(zh?K.lo+' 家店预计月达成不到 85%':K.lo+' toko proyeksi < 85%'),zh?'点开看是哪几家':'Lihat toko',S._desk?"deskGo('sales')":"slOpen('store')"]);
   al.push(['#9aa0a6',(zh?'销售数据到 ':'Data penjualan s.d. ')+mdLbl(K.asOf),zh?'POS 最近一次更新':'Update POS terakhir']);}
  return al;}
@@ -764,7 +772,7 @@ function sdPerson(){var zh=L==='zh',P=S.sdP,op=P.op||'month',k='m_'+op+'_'+P.nic
   return '<div style="padding:9px 0;'+(i?'border-top:1px solid #eee;':'')+'font-size:14px"><b>'+x.slice(5)+'</b> <span class="muted">'+esc((a&&a.store)||(c&&c.store)||'')+'</span><div class="small">'+(zh?'上班 ':'Masuk ')+(a?a.time+(a.diff>0?' <span style="color:#d93025">'+(zh?'迟到 '+a.diff+' 分钟':'telat '+a.diff+' mnt')+'</span>':''):'—')+' · '+(zh?'下班 ':'Pulang ')+(c?c.time+(c.early>10?' <span style="color:#d93025">'+(zh?'早退 '+c.early+' 分钟':'pulang awal '+c.early+' mnt')+'</span>':''):'<span style="color:#d93025">'+(zh?'没打':'tidak ada')+'</span>')+'</div></div>';}).join('')+'</div>';}
 // ---------- 门店运营（2026-11-19 定）：承接 LK Toko 的数据。今日 = 每家店当天执行情况（有事的店排前面）；积分 = 人员积分排名 / 按门店；任务、店员销售先放「即将上线」 ----------
 // 谁能看：人事名单里的人按区域；区域主管、运营经理、稽查按 Core Team「Stores Covered」看自己负责的店（后台判断）
-function opsOk(){return sdmOk()||/area|operations manager|audit/i.test(String((S.user&&S.user.role)||''));}
+function opsOk(){var A=S.boot&&S.boot.acc;if(A)return !!A.ops;return sdmOk()||/area|operations manager|audit/i.test(String((S.user&&S.user.role)||''));}
 function opsPre(){if(!sdmTk())return;sdmLoad('opsT_','opsToday',{date:''});sdmLoad('opsP_','opsPoints',{ym:''});}
 function rsnH(r){var zh=L==='zh';
  if(r==='PENDING_IN')return zh?'上班打卡（班次待定，补上后自动算分）':'Absen masuk (shift belum ada, poin dihitung nanti)';
@@ -804,7 +812,7 @@ function opsCard(s,isT,dd){var zh=L==='zh',bc=s.lvl==='red'?'#d93025':s.lvl==='y
  var h='<div class="card" style="border-left:5px solid '+bc+'"><div style="display:flex;justify-content:space-between;gap:8px"><b>'+esc(s.name)+'</b><span class="small muted" style="white-space:nowrap">'+(s.open?s.open+'–'+s.close+' '+esc(s.tz||''):'')+'</span></div>';
  if(s.flags.length)h+='<div>'+s.flags.map(function(f){return opsFlag(f,s.past);}).join('')+'</div>';
  var b=s.buka,BAD={alat:zh?'设备':'Alat',bersih:zh?'卫生':'Kebersihan',display:zh?'陈列':'Display'};
- if(s.cash)h+='<div class="small" style="margin-top:8px;color:#d93025">'+(zh?'还没转的现金 ':'Tunai belum disetor ')+rp(s.cash.amount)+(zh?' · 从 '+s.cash.since+' 起':' · sejak '+s.cash.since)+(s.cash.reason?' · '+esc(s.cash.reason):'')+'</div>';
+ if(s.cash)h+='<div class="small" style="margin-top:8px;color:#d93025">'+(zh?'还没转的现金 ':'Tunai belum disetor ')+rp(s.cash.amount)+(zh?' · 从 '+s.cash.since+' 起':' · sejak '+s.cash.since)+(s.cash.reason?' · '+esc(s.cash.reason):'')+(s.cash.plan?(zh?' · 打算 ':' · rencana ')+esc(cwHub(s.cash.plan,s.cash.pdate)):'')+'</div>';
  if((b&&b.ver!==2)||(!b&&s.people.length&&dd<'2026-11-23'))h+='<div class="small" style="margin-top:8px">'+(zh?'开店检查 ':'Cek buka ')+(b?b.time+' · '+esc(b.name)+(b.bad.length?' <span style="color:#d93025">'+(zh?'不合格：':'kurang: ')+b.bad.map(function(x){return BAD[x]||x;}).join('、')+'</span>':'')+(b.note?'<br><span class="muted">'+esc(b.note)+'</span>':''):'—')+'</div>';
  if(s.people.length)h+=s.people.map(function(p){var i=p.in,o=p.out;
    var inT=i?i.time+(i.diff==null?' <span style="color:#999">'+(zh?'待定':'menunggu')+'</span>':i.diff>0?' <span style="color:#d93025">'+(zh?'迟到 '+i.diff+' 分钟':'telat '+i.diff+' mnt')+'</span>':''):'—';
@@ -851,8 +859,26 @@ var NLV={urgent:['#d93025','#fdecea'],important:['#b06000','#fff4d6'],info:['#5f
 function nKey(){return 'lk_nr_'+String((S.user&&S.user.nick)||'').toLowerCase();}
 function nRead(){try{return JSON.parse(localStorage.getItem(nKey())||'{}');}catch(e){return {};}}
 function nList(){var zh=L==='zh',r=nRead(),o={urgent:0,important:1,info:2},d=((S.sd||{}).ntc||{}).list||[],hl=(S.boot&&S.boot.health)||[],out=[];
- if(hl.length)out.push({id:'S-health',kind:'sys',level:'urgent',zh:{t:'数据源读取异常（仅你可见）',b:hl.map(function(x){return x.src+' · '+(x.msg||('正在用 '+x.bak+' 的备份'));}).join('\n')+'\n通常是表格改了名字或格式，把这条截图发给 Claude 处理。'},id_:{t:'Sumber data bermasalah (hanya kamu)',b:hl.map(function(x){return x.src+' · '+(x.msg||('pakai cadangan '+x.bak));}).join('\n')}});
+ if(hl.length){var ours=hl.some(function(x){return x.ours;});   // 按原因写（待开发第 25 行）：总部没出数 = 等就行；我们这边出错 = 截图发给 Claude
+  out.push({id:'S-health',kind:'sys',level:ours?'urgent':'important',zh:{t:(ours?'数据读取出错':'数据还没更新')+'（仅你可见）',b:hl.map(function(x){return x.src+' · '+(x.msg||(x.bak?'页面先用 '+x.bak+' 的数':'今天还没更新'));}).join('\n')},id_:{t:ours?'Data gagal dibaca (hanya kamu)':'Data belum update (hanya kamu)',b:hl.map(function(x){return x.src+(x.bak?' · pakai data '+x.bak:'');}).join('\n')}});}
+ out=out.concat(sysNotes());
  return out.concat(xNotes()).concat(d).map(function(n){n.read=n.kind==='ann'&&!!r[n.id];return n;}).sort(function(a,b){return ((a.ended?1:0)-(b.ended?1:0))||((a.read?1:0)-(b.read?1:0))||(o[a.level]-o[b.level])||String(b.date||'').localeCompare(String(a.date||''));});}
+// Victory 首页系统提醒（2026-11-25，待开发第 3、6 行）：权限变了谁多了 / 少了什么、岗位功能表对不上、名单同步被拦住
+function sysNotes(){var Y=(S.boot&&S.boot.sys)||null,out=[];if(!Y)return out;var PN={'goods.admin':'订货·总管理','goods.wh':'订货·仓库','goods.ops':'订货·门店订单审核','goods.po':'订货·采购单','goods.audit':'订货·稽查核对','goods.view':'订货·只看','exp.edit':'拓展·编辑','exp.view':'拓展·只看','lapor.all':'上报·看全部','lapor.repair':'上报·处理报修','lapor.repair_view':'上报·看报修','lapor.fb':'上报·处理反馈','lapor.whistle':'上报·处理举报','school.approve':'培训·审批','school.publish':'培训·发布','school.board':'培训·看进度','sdm':'人事','sdm.no_adj':'积分·不能校正','petty.all':'备用金·看全部','account.reset':'账号·重置密码','sales.store':'销售·门店销售','sales.grab':'销售·GrabMart','sales.toko':'销售·Tokopedia','ops.view':'门店运营·看','check.std':'门店检查·标准化检核','check.spot':'门店检查·库存抽检','audit.board':'首页稽查看板','petty.fin':'备用金·财务处理','fin.recon':'财务·对账'},sc=function(x){return x==='OWN'?'自己的店':x==='Y'?'有':x;};
+ var H=Y.syncHold||{},hk=Object.keys(H);if(hk.length)out.push({id:'S-hold-'+hk.join('|'),kind:'sys',level:'urgent',zh:{t:'名单同步被拦住了（仅你可见）',b:hk.map(function(k){var x=H[k];return x.name+'：'+x.why+'（从 '+String(x.since||'').slice(0,16).replace('T',' ')+' 起，系统还在用上一版）';}).join('\n')+'\n如果是有意的大改动，跟 Claude 说「确认更新」就会放行。'},id_:{t:'Sinkron daftar ditahan',b:hk.map(function(k){return H[k].name+': '+H[k].why;}).join('\n')}});
+ var W=Y.permWarn||[];if(W.length)out.push({id:'S-pw-'+W.length,kind:'sys',level:'important',zh:{t:'岗位功能表有 '+W.length+' 处对不上（仅你可见）',b:W.join('\n')},id_:{t:'Tabel akses jabatan perlu dicek',b:W.join('\n')}});
+ var P=Y.permDiff,st=String((S.boot&&S.boot.serverTime)||'');if(P&&P.diff&&P.diff.length&&st&&(new Date(st.slice(0,10))-new Date(String(P.at).slice(0,10)))/864e5<=3){var by={};P.diff.forEach(function(d){(by[d.nick]=by[d.nick]||[]).push((d.old&&!d.new?'少了 ':!d.old?'多了 ':'改了 ')+(PN[d.perm]||d.perm)+(d.new?'（'+sc(d.new)+'）':''));});
+  out.push({id:'S-pd-'+P.at,kind:'sys',level:'info',date:P.at,zh:{t:'权限变了（'+P.at+'）',b:Object.keys(by).map(function(n){return n+'：'+by[n].join('、');}).join('\n')},id_:{t:'Akses berubah ('+P.at+')',b:Object.keys(by).map(function(n){return n+': '+by[n].length+' perubahan';}).join('\n')}});}
+ return out;}
+// 现金什么时候转（待开发第 21 行）：明天上午 / 明天下午 / 后天，按营业日报那天算出日期，如「11/24 上午」；旧记录照原样显示
+function cwHub(p,d){var zh=L==='zh',add=function(n){if(!d)return '';var x=new Date(d+'T00:00:00Z');x.setUTCDate(x.getUTCDate()+n);return ('0'+(x.getUTCMonth()+1)).slice(-2)+'/'+('0'+x.getUTCDate()).slice(-2)+' ';};
+ if(p==='BESOK_PAGI'||p==='besok')return add(1)+(zh?'上午':'pagi');if(p==='BESOK_SORE')return add(1)+(zh?'下午':'sore');if(p==='LUSA')return add(2)+(zh?'（后天）':'(lusa)');return /^\d{4}-\d{2}-\d{2}$/.test(p)?p.slice(5).replace('-','/'):p;}
+// 现金没按时转的门店清单（待开发第 22 行）
+function cashLateBox(){var zh=L==='zh',CL=((S.boot&&S.boot.home)||{}).cashLate||[],m=document.createElement('div');m.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:60;display:flex;align-items:center;justify-content:center;padding:20px';
+ m.innerHTML='<div style="background:#fff;border-radius:14px;padding:18px;max-width:440px;width:100%;max-height:80vh;overflow:auto"><div style="font-weight:700;margin-bottom:10px">'+(zh?'现金没按时转（门店自己报的）':'Tunai belum disetor sesuai janji')+'</div>'
+  +CL.map(function(x){return '<div style="padding:8px 0;border-top:1px solid #eee"><b>'+esc(x.sn)+'</b> <span class="small muted">'+esc(x.s)+'</span><div class="small">'+rp(x.amount)+(zh?' · 从 '+esc(x.since)+' 起 · 说好 '+esc(cwHub(x.plan,x.date))+' 转':' · sejak '+esc(x.since)+' · janji '+esc(cwHub(x.plan,x.date)))+'</div></div>';}).join('')
+  +'<div class="small muted" style="margin-top:8px">'+(zh?'以门店在 LK Toko 报的为准；财务以对账结果为准。':'Berdasarkan laporan toko di LK Toko.')+'</div><button class="btn" style="margin-top:12px" onclick="this.closest(\'div[style*=fixed]\').remove()">'+(zh?'关闭':'Tutup')+'</button></div>';
+ m.onclick=function(e){if(e.target===m)m.remove();};document.body.appendChild(m);}
 function nTxt(n){return L==='zh'?n.zh:n.id_;}
 function nBar(){var all=nList(),act=all.filter(function(n){return !n.read&&!n.ended;}),zh=L==='zh';
  if(!act.length)return '<div onclick="openMod(\'ntc\')" style="margin:0 0 12px;padding:11px 14px;border-radius:12px;background:#fff;border:1px solid #e4e4e0;font-size:14px;color:#9aa0a6;cursor:pointer;display:flex;justify-content:space-between"><span>✓ '+(zh?'目前没有需要你处理的事':'Tidak ada yang perlu kamu urus')+'</span><span>›</span></div>';
@@ -872,14 +898,15 @@ function scHome(){var d=loadDraft(),zh=L==='zh',h=profileCard(),pc=(S.boot&&S.bo
  var finSub=zh?'备用金':'Petty cash';
  var sa=(S.boot&&S.boot.sales)||{},core=!!((S.boot&&S.boot.me)||{}).core;
  // 核心人员：已上线的模块一律亮（模块里没权限的标准入口显示灰色）；门店人员：只显示用得到的
- tiles=[['ops',zh?'门店运营':'Operasional Toko',opsOk()?' ':''],['sales',zh?'销售':'Penjualan',(core||sa.store||sa.grab)?' ':''],['check',zh?'门店检查':'Cek Toko',(S.user.entries||[]).indexOf('SPOT')>=0||!hasChk?(zh?'巡检 · 库存抽查':'Inspeksi · Stock opname'):(zh?'门店巡检':'Inspeksi toko')],
-  ['goods',zh?'货品':'Produk & Stok',core?' ':''],['fin',zh?'财务':'Keuangan',finSub],['hr',zh?'人事':'SDM',sdmOk()?' ':''],['exp',zh?'拓展':'Ekspansi',core?' ':''],['fix',zh?'报修与反馈':'Perbaikan & Laporan',core?' ':''],['school','LK School',core?' ':'']];
+ tiles=[['ops',zh?'门店运营':'Operasional Toko',modOk('ops')?' ':''],['sales',zh?'销售':'Penjualan',modOk('sales')?' ':''],['check',zh?'门店检查':'Cek Toko',(S.user.entries||[]).indexOf('SPOT')>=0||!hasChk?(zh?'巡检 · 库存抽查':'Inspeksi · Stock opname'):(zh?'门店巡检':'Inspeksi toko')],
+  ['goods',zh?'货品':'Produk & Stok',core?' ':''],['fin',zh?'财务':'Keuangan',finSub],['hr',zh?'人事':'SDM',modOk('hr')?' ':''],['exp',zh?'拓展':'Ekspansi',core?' ':''],['fix',zh?'报修与反馈':'Perbaikan & Laporan',core?' ':''],['school','LK School',core?' ':'']];
 
  // 门店人员：只显示自己用得到的格子（未上线的、用不到的都不显示）；核心团队：全部显示，未上线的灰色
  if(!core)tiles=tiles.filter(function(x){return (x[0]==='check'&&hasChk)||(x[0]==='fin'&&pc.has)||(x[0]==='sales'&&x[2]);});
  if(!tiles.length)return h+'<div class="card muted" style="text-align:center;margin-top:12px">'+(zh?'目前还没有需要你操作的功能，有新功能会在这里出现。':'Belum ada fitur untukmu saat ini. Fitur baru akan muncul di sini.')+'</div>'+a2hsMini();
  h+='<div class="grid9">'+tiles.map(function(x){var on=!!x[2],ic='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="'+ICO[x[0]]+'"/></svg>';
-  return '<div class="t9'+(on?'':' soon')+'" style="position:relative" onclick="'+(on?'openMod(\''+x[0]+'\')':(x[0]==='sales'?'offToast()':'toast(\''+soon+'\')'))+'"><div class="ic">'+ic+'</div><div class="nm">'+esc(x[1])+'</div>'+''+'</div>';}).join('')+'</div>';
+  var lk=core&&['ops','sales','check','hr'].indexOf(x[0])>=0&&!modOk(x[0]);if(lk)on=true;   // 没权限：照样显示、右上角小锁，点进去看到没权限提示（待开发第 5 行）
+  return '<div class="t9'+(on?'':' soon')+'" style="position:relative" onclick="'+(lk?'openMod(\'lock_'+x[0]+'\')':on?'openMod(\''+x[0]+'\')':'toast(\''+soon+'\')')+'"><div class="ic">'+ic+'</div><div class="nm">'+esc(x[1])+'</div>'+(lk?'<span style="position:absolute;top:8px;right:8px;color:#9499A0;display:flex">'+LOCK_SVG+'</span>':'')+'</div>';}).join('')+'</div>';
  return h+myArea()+a2hsMini();}
 // 金额统一格式（规则 R231）：逗号千分位、点只做小数点，中印文一样
 function rp(n){n=Math.round(Number(n)||0);return (n<0?'-':'')+'Rp '+Math.abs(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');}
@@ -1938,7 +1965,9 @@ function gdAllocUI(){var A=S.gd.alloc,s=A.short||[];
  var F=gdFilt('alloc',s);
  return h+F.bar+'<div class="card gdtw"><table class="dtbl">'+gdTh([[gT('商品','Produk')],[gT('门店需求','Butuh toko'),1],[gT('仓库可分','Stok gudang'),1],[gT('实际分出','Dialokasi'),1],[gT('还缺','Kurang'),1],[gT('要货门店','Toko'),1]])+'<tbody>'
   +F.rows.map(function(x){return '<tr><td>'+gdName(x)+'</td><td class="r">'+gdN(x.demand)+'</td><td class="r">'+gdN(x.wh)+'</td><td class="r">'+gdN(x.alloc)+'</td><td class="r" style="color:#c00">'+gdN(Number(x.demand)-Number(x.alloc))+'</td><td class="r">'+x.stores+'</td></tr>';}).join('')+'</tbody></table></div>';}
-function gdNewRound(){var d=new Date(),dw=d.getDay(),toMon=dw===1?7:(8-dw)%7||7,lk=new Date(d.getTime()+toMon*864e5),sh=new Date(lk.getTime()+5*864e5);
+function gdNewRound(){gdCall('asof',[],function(A){var w=[],td=A&&A.today;if(td&&A.store!==td)w.push(gT('门店库存是 ','Stok toko per ')+String(A.store||'—').slice(5).replace('-','/')+gT(' 的',''));if(td&&String(A.dms||'').slice(0,10)!==td)w.push(gT('仓库库存是 ','Stok gudang per ')+String(A.dms||'—').slice(5,10).replace('-','/')+gT(' 的',''));
+  if(w.length&&!confirm(w.join('，')+gT('，不是今天的。确定要开吗？',', bukan hari ini. Tetap buat putaran?')))return;gdNewRound2();});}
+function gdNewRound2(){var d=new Date(),dw=d.getDay(),toMon=dw===1?7:(8-dw)%7||7,lk=new Date(d.getTime()+toMon*864e5),sh=new Date(lk.getTime()+5*864e5);
  if(!confirm(gT('今天开一轮补货？\n· 系统按今天的销量和库存分配\n· 门店查看、运营调整到 '+gdMD(lk)+' 12:00 自动锁定\n· 仓库最晚 '+gdMD(sh)+' 发出','Buat putaran hari ini?\nKunci otomatis '+gdMD(lk)+' 12:00, kirim paling lambat '+gdMD(sh)+'.')))return;
  toast(gT('正在计算，约半分钟…','Menghitung…'));gdCall('newRound',[''],function(){S.gd.round=0;S.gd.alloc=null;S.gd.st='all';gdLoad();toast(gT('已生成','Sudah dibuat'));});}
 function gdLock(id){if(!confirm(gT('现在就锁定？锁定后运营不能再改，仓库开始确认。','Kunci sekarang? Ops tidak bisa ubah lagi.')))return;gdCall('lock',[id],function(){gdLoad();});}
@@ -1997,20 +2026,27 @@ function gdSlip(id){var w=window.open('','_blank');if(!w)return toast(gT('浏览
   w.document.open();w.document.write(html);w.document.close();});}
 
 // ---------- 当前库存 ----------
+// 当前库存（待开发第 23 行，2026-11-24）：一个页面只标一个时间（这次用的库存是什么时候的），超过 1 天标黄；门店库存三组不重叠，点格子看各自明细
+function gdAsOf(A,kind){if(!A)return '';var t,d0;if(kind==='wh'){t=A.dms||'';d0=String(t).slice(0,10);}else{d0=A.store||'';t=d0?d0+' 05:30':'';}
+ if(!t)return '';var old=A.today&&d0&&(new Date(A.today)-new Date(d0))/864e5>=1,lbl=gT('库存截至 ','Stok per ')+String(t).slice(5,16).replace('-','/');
+ return '<span class="small" style="padding:3px 8px;border-radius:6px;'+(old?'background:#fff3c4;color:#8a5a00':'color:#6b7076')+'">'+esc(lbl)+(old?gT(' · 不是最新数据',' · bukan data terbaru'):'')+'</span>';}
 function gdStockUI(){var G=S.gd,seg=gdSeg([['stock',gT('门店库存','Stok toko')],['wh',gT('仓库库存','Stok gudang')]],G.tab,"gdTab('%v')");
  if(G.tab==='wh'){var W=G.wh;if(!W)return gdBar(seg)+'<div class="card">'+t('loading')+'</div>';
   var F=gdFilt('wh',W.rows);
-  var h=gdBar(seg+'<span class="small muted">'+gT('中心仓 · DMS 每天自动同步 · ','Gudang pusat · sinkron DMS · ')+esc(W.date)+'　'+gdN(W.rows.length)+' SKU · '+gdN(W.rows.reduce(function(s,r){return s+Number(r.qty)},0))+gT(' 件',' pcs')+'</span>');
+  var h=gdBar(seg+'<span class="small muted">'+gT('中心仓 · ','Gudang pusat · ')+gdN(W.rows.length)+' SKU · '+gdN(W.rows.reduce(function(s,r){return s+Number(r.qty)},0))+gT(' 件',' pcs')+'</span><span style="margin-left:auto">'+gdAsOf(W.asof||{dms:W.date},'wh')+'</span>');
   return h+F.bar+(F.rows.length?'<div class="card gdtw"><table class="dtbl">'+gdTh([[gT('商品','Produk')],[gT('品类','Kategori')],[gT('品牌','Merek')],[gT('数量','Jumlah'),1]])+'<tbody>'+F.rows.slice(0,1500).map(function(r){return '<tr><td>'+gdName(r)+'</td>'+gdCB(r)+'<td class="r">'+gdN(r.qty)+'</td></tr>';}).join('')+'</tbody></table></div>':gdEmpty('—'));}
- var K=G.stk;if(!K)return gdBar(seg)+'<div class="card">'+t('loading')+'</div>';var k=K.kpi||{},kind=G.stkKind||'low';
- var h=gdBar(seg+'<span style="margin-left:auto;display:flex;gap:8px">'+gdStoreSel(K.stores,K.store,'gdStkStore(this.value)')+'</span>');
- var tile=function(lbl,v,key){var on=key&&kind===key;return '<div class="gdtile'+(on?' on':'')+(key?' ck':'')+'"'+(key?' onclick="S.gd.stkKind=\''+key+'\';render()"':'')+'><div class="small">'+lbl+'</div><b>'+v+'</b></div>';};
- h+='<div class="gdtiles">'+tile(gT('有货 SKU','SKU ada stok'),gdN(k.skus))+tile(gT('总件数','Total pcs'),gdN(k.qty))+tile(gT('断货','Kosong'),gdN(k.oos))+tile(gT('不到 14 天（含断货）','< 14 hari'),gdN(k.low),'low')+tile(gT('超过 60 天 / 没销量','> 60 hari'),gdN(k.high),'high')+'</div>';
- var rows=kind==='low'?K.low:K.high,low=kind==='low',F=gdFilt('stk'+kind,rows);
- h+=gdSec(low?gT('不到 14 天（含断货）','Kurang dari 14 hari'):gT('超过 60 天 / 没有销量','Lebih dari 60 hari / tidak laku'),gT('点上面的黄色格子切换','klik kotak di atas untuk ganti'))+F.bar;
+ var K=G.stk;if(!K)return gdBar(seg)+'<div class="card">'+t('loading')+'</div>';var k=K.kpi||{},kind=G.stkKind||'oos';if(['oos','low','high'].indexOf(kind)<0)kind='oos';
+ var h=gdBar(seg+'<span style="margin-left:auto;display:flex;gap:8px;align-items:center">'+gdAsOf(K.asof,'store')+gdStoreSel(K.stores,K.store,'gdStkStore(this.value)')+'</span>');
+ var tile=function(lbl,v,key,sub){var on=key&&kind===key;return '<div class="gdtile'+(on?' on':'')+(key?' ck':'')+'"'+(key?' onclick="S.gd.stkKind=\''+key+'\';render()"':'')+'><div class="small">'+lbl+'</div><b>'+v+'</b>'+(sub?'<div class="small muted">'+sub+'</div>':'')+'</div>';};
+ h+='<div class="gdtiles">'+tile(gT('有货 SKU','SKU ada stok'),gdN(k.skus))+tile(gT('总件数','Total pcs'),gdN(k.qty))+tile(gT('已断货','Kosong'),gdN(k.oos),'oos')+tile(gT('不满 14 天（未断货）','< 14 hari (masih ada stok)'),gdN(k.low),'low')
+  +tile(gT('60 天以上（慢销 / 滞销）','> 60 hari (lambat / tidak laku)'),gdN(k.high),'high',gT('慢销 ','Lambat ')+gdN(k.slow)+' · '+gT('滞销 ','Tidak laku ')+gdN(k.dead))+'</div>';
+ var rows=kind==='oos'?(K.oos||[]):kind==='low'?K.low:K.high,F=gdFilt('stk'+kind,rows);
+ var ttl={oos:gT('已断货（有销量、库存 0）','Kosong (ada penjualan, stok 0)'),low:gT('不满 14 天（有库存、可卖不到 14 天）','< 14 hari (masih ada stok)'),high:gT('60 天以上（慢销：近 60 天有销量；滞销：近 60 天没有销量）','> 60 hari (lambat / tidak laku 60 hari)')}[kind];
+ h+=gdSec(ttl,gT('点上面的格子切换','klik kotak di atas untuk ganti'))+F.bar;
  if(!F.rows.length)return h+gdEmpty('—');
- return h+'<div class="card gdtw"><table class="dtbl">'+gdTh([[gT('商品','Produk')],[gT('品类','Kategori')],[gT('品牌','Merek')],[gT('库存','Stok'),1]].concat(low?[[gT('在途','Dalam kiriman'),1]]:[]).concat([[gT('日销','Rata2/hari'),1],[gT('可卖天数','Hari'),1]]))+'<tbody>'
-  +F.rows.map(function(r){return '<tr><td>'+gdName(r)+'</td>'+gdCB(r)+'<td class="r">'+gdN(r.stock)+(r.oos?' <span class="gdtag">'+gT('断货','habis')+'</span>':'')+'</td>'+(low?'<td class="r">'+gdN(r.transit)+'</td>':'')+'<td class="r">'+(Number(r.avg)||0).toFixed(2)+'</td><td class="r">'+gdD(r.dos)+'</td></tr>';}).join('')+'</tbody></table></div>';}
+ var tr=kind!=='high';
+ return h+'<div class="card gdtw"><table class="dtbl">'+gdTh([[gT('商品','Produk')],[gT('品类','Kategori')],[gT('品牌','Merek')],[gT('库存','Stok'),1]].concat(tr?[[gT('在途','Dalam kiriman'),1]]:[]).concat([[gT('日销','Rata2/hari'),1],[gT('可卖天数','Hari'),1]]))+'<tbody>'
+  +F.rows.map(function(r){var tag=r.tag==='dead'?gT('滞销','Tidak laku'):r.tag==='slow'?gT('慢销','Lambat'):'';return '<tr><td>'+gdName(r)+(tag?' <span class="gdtag">'+tag+'</span>':'')+'</td>'+gdCB(r)+'<td class="r">'+gdN(r.stock)+'</td>'+(tr?'<td class="r">'+gdN(r.transit)+'</td>':'')+'<td class="r">'+(Number(r.avg)||0).toFixed(2)+'</td><td class="r">'+gdD(r.dos)+'</td></tr>';}).join('')+'</tbody></table></div>';}
 function gdStkStore(sid){var G=S.gd;G.stk=null;render();gdCall('stock',[sid],function(r){G.stk=r;render();});}
 
 // ---------- 调拨与退仓（只给建议，实际在 DMS 做）----------
