@@ -480,7 +480,7 @@ function homeAlerts(K){var zh=L==='zh',H=(S.boot&&S.boot.home)||{},D=H.dash,al=[
   if(ni.length)al.push(['#b3261e',(zh?ni.length+' 家店 10:30 了还没人打卡':ni.length+' toko belum ada yang absen (10:30)'),ni.map(function(x){return esc(x.name)}).slice(0,6).join('、')+(ni.length>6?' …':''),go]);
   if(nb.length)al.push(['#b3261e',(zh?nb.length+' 家店打了卡但还没做开店检查':nb.length+' toko belum cek buka'),nb.map(function(x){return esc(x.name)}).slice(0,6).join('、')+(nb.length>6?' …':''),go]);}}
  // 补货待办（待开发第 18 行）：仓库 / 运营 / Victory 各看自己要做的；10 分钟最多查一次
- if(modOk('goods')){var GT=S.gdTodo;if(!GT||Date.now()-GT.at>600000){S.gdTodo={at:Date.now(),d:GT&&GT.d};gdCall('todo',[],function(r){S.gdTodo={at:Date.now(),d:r};if(!S.mod)render();},function(){});}
+ if(modOk('goods')&&typeof gdCall==='function'){var GT=S.gdTodo;if(!GT||Date.now()-GT.at>600000){S.gdTodo={at:Date.now(),d:GT&&GT.d};gdCall('todo',[],function(r){S.gdTodo={at:Date.now(),d:r};if(!S.mod)render();},function(){});}
   var T=S.gdTodo&&S.gdTodo.d,gg="S.nav=[];S.mod='goods';S.gd=null;render()";
   if(T){var w=T.wh,ws=[];if(w.confirm)ws.push(zh?w.confirm+' 家待仓库确认':w.confirm+' tunggu konfirmasi');if(w.ship)ws.push(zh?w.ship+' 家待发出':w.ship+' siap kirim');if(w.reject)ws.push(zh?w.reject+' 家拒收待处理'+(w.rj2?'（'+w.rj2+' 家拒收 2 次）':''):w.reject+' ditolak');if(w.redo)ws.push(zh?w.redo+' 家待填新 DMS 单号':w.redo+' isi DMS baru');
    if(ws.length)al.push([w.reject||w.redo?'#b3261e':'#e0a100',(zh?'补货 · 仓库待办':'Replenishment · gudang'),ws.join(zh?'、':' · '),gg]);
